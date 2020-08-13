@@ -26,4 +26,7 @@ public class OrderModel {
 
     private BigDecimal orderPrice;
 
+    //若非空，表示以秒杀方式下单
+    private Integer promoId;
+
 }

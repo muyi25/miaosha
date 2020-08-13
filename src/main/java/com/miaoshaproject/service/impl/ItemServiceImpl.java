@@ -7,7 +7,9 @@ import com.miaoshaproject.dataobject.ItemStockDO;
 import com.miaoshaproject.error.BussinessException;
 import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.service.ItemService;
+import com.miaoshaproject.service.PromoService;
 import com.miaoshaproject.service.model.ItemModel;
+import com.miaoshaproject.service.model.PromoModel;
 import com.miaoshaproject.valiator.ValidationResult;
 import com.miaoshaproject.valiator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +34,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
+
+    @Autowired
+    private PromoService promoService;
 
     private ItemDO convertItemDOFromItemModel(ItemModel itemModel){
         if(itemModel == null) {
@@ -96,6 +101,12 @@ public class ItemServiceImpl implements ItemService {
 
         //将dataobject转换成model
         ItemModel itemModel = this.convertModelFromDataObject(itemDO,itemStockDO);
+
+        //获取商品秒杀活动信息
+        PromoModel promoModel = promoService.getPromoById(itemModel.getId());
+        if(promoModel != null && promoModel.getStatus().intValue() != 3) {
+            itemModel.setPromoModel(promoModel);
+        }
 
         return itemModel;
     }
